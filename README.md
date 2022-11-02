@@ -1,10 +1,14 @@
 # 天気Bot
 
 LineNotifyで天気を通知してくれるBOTです。
+
 各自で任意のトークン・都市・通知時間を入れれば誰でも使えるようになると思います。(トークン発行は必須です)
 
 アクセストークンの発行でお世話になったサイト様
-[Lineのアクセストークン発行方法](https://qiita.com/pontyo4/items/10aa0ba0a17aee19e88e)
+* [Lineのアクセストークン発行方法](https://qiita.com/pontyo4/items/10aa0ba0a17aee19e88e)
+
+都市名はこの中にあるものをお使いください
+* [全国の地点定義表](https://weather.tsukumijima.net/primary_area.xml)
 
 コード作成において大変参考にしたサイト様
 * [LineBotの作り方（python）](https://datadriven-rnd.com/linebot/)
