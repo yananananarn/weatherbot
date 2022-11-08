@@ -8,9 +8,12 @@ from time import sleep
 # Enter any value by each user
 line_notify_token = "your-token"
 city_name = 'さいたま'
-notice_time = '07:00'
+notice_time = '06:50'
 
 def main():
+    lineSend("起動しました\n" + str(datetime.datetime.now()))
+    getWeather()
+
     schedule.every().days.at(notice_time).do(getWeather)
     # schedule.every(10).seconds.do(getWeather)
     while True:
@@ -19,7 +22,6 @@ def main():
     
 
 def lineSend(message):
-    #bot settings
     url = "https://notify-api.line.me/api/notify"
     
     message = '\n' + str(message)
@@ -27,7 +29,7 @@ def lineSend(message):
     payload = {'message': message}
     headers = {'Authorization': 'Bearer ' + line_notify_token}
 
-    # message send
+    # メッセージを送信
     requests.post(url, data=payload, headers=headers)
 
 
@@ -43,15 +45,25 @@ def getWeather():
         
     json_file = requests.get(os.path.join(base_url,'city',city_id_dict[city_name])).json()
     
-    today_weather = city_name + 'の' + json_file['forecasts'][0]['dateLabel'] + 'の天気は, ' + json_file['forecasts'][0]['telop'] + 'です．'
-    description = json_file['description']['text']
+    # jsonファイルから変数に格納
+    title = city_name + 'の' + json_file['forecasts'][0]['date'] + 'の天気予報'
+    telop = '天気 : ' + json_file['forecasts'][0]['telop']
+    tem_min = json_file['forecasts'][0]['temperature']['min']['celsius']
+    tem_max = json_file['forecasts'][0]['temperature']['max']['celsius']
+    temp = '最低気温 : ' + str(tem_min) + '℃\n最高気温 : ' + str(tem_max) + '℃'
 
-    print(json_file)
+    # 降水確率を配列に格納
+    chance_of_rain = []
+    for i in range(4):
+        chance_of_rain += [json_file['forecasts'][0]['chanceOfRain']['T'+f'{i*6:02}'+'_'+f'{(i+1)*6:02}']]
+
+    # 送信メッセージに入れる
+    sendMessage = '\n' + title + '\n' + telop + '\n' + temp + '\n'
+    for i in range(4):
+        sendMessage += str(i*6) + ' ~ ' + str((i+1)*6) + '時 : ' + chance_of_rain[i] + '\n'
 
     # Send to Line
-    lineSend(today_weather)
-    lineSend(description)
-    lineSend('予報日 ' + json_file['forecasts'][0]['date'])
+    lineSend(sendMessage)
     
     
 if __name__ == "__main__":
