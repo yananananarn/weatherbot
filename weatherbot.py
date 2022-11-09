@@ -9,6 +9,7 @@ from time import sleep
 line_notify_token = "your-token"
 city_name = 'さいたま'
 notice_time = '06:50'
+forecast_day = 1
 
 def main():
     lineSend("起動しました\n" + str(datetime.datetime.now()))
@@ -46,21 +47,23 @@ def getWeather():
     json_file = requests.get(os.path.join(base_url,'city',city_id_dict[city_name])).json()
     
     # jsonファイルから変数に格納
-    title = '<天気予報>\n' + json_file['forecasts'][0]['date'] + 'の' + city_name + '\n'
-    telop = '・天気\n' + json_file['forecasts'][0]['telop']
-    tem_min = json_file['forecasts'][0]['temperature']['min']['celsius']
-    tem_max = json_file['forecasts'][0]['temperature']['max']['celsius']
+    title = '<天気予報>\n' + json_file['forecasts'][forecast_day]['date'] + 'の' + city_name + '\n'
+    telop = '・天気\n' + json_file['forecasts'][forecast_day]['telop']
+    tem_min = json_file['forecasts'][forecast_day]['temperature']['min']['celsius']
+    tem_max = json_file['forecasts'][forecast_day]['temperature']['max']['celsius']
     temp = '・気温\n最低 : ' + str(tem_min) + '℃ 最高 : ' + str(tem_max) + '℃'
 
     # 降水確率を配列に格納
     chance_of_rain = []
     for i in range(4):
-        chance_of_rain += [json_file['forecasts'][0]['chanceOfRain']['T'+f'{i*6:02}'+'_'+f'{(i+1)*6:02}']]
+        chance_of_rain += [json_file['forecasts'][forecast_day]['chanceOfRain']['T'+f'{i*6:02}'+'_'+f'{(i+1)*6:02}']]
 
     # 送信メッセージに入れる
     sendMessage = title + '\n' + telop + '\n' + temp + '\n・降水確率'
     for i in range(4):
-        sendMessage += '\n' + str(i*6) + ' ~ ' + str((i+1)*6) + '時 : ' + chance_of_rain[i]
+        sendMessage += '\n' + str(i*6) + '時\n ~    ' + chance_of_rain[i] #+ '\n' + str((i+1)*6) + '時'
+        if i == 3:
+            sendMessage += '\n24時'
 
     # Send to Line
     lineSend(sendMessage)
