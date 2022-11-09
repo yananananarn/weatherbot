@@ -12,7 +12,7 @@ notice_time = '06:50'
 forecast_day = 1
 
 def main():
-    lineSend("起動しました\n" + str(datetime.datetime.now()))
+    lineSend("起動しました\n" + str(datetime.datetime.now().replace(microsecond=0)))
     getWeather()
 
     schedule.every().days.at(notice_time).do(getWeather)
@@ -47,23 +47,21 @@ def getWeather():
     json_file = requests.get(os.path.join(base_url,'city',city_id_dict[city_name])).json()
     
     # jsonファイルから変数に格納
-    title = '<天気予報>\n' + json_file['forecasts'][forecast_day]['date'] + 'の' + city_name + '\n'
+    title = '\n' + json_file['forecasts'][forecast_day]['date'] + 'の' + city_name
     telop = '・天気\n' + json_file['forecasts'][forecast_day]['telop']
     tem_min = json_file['forecasts'][forecast_day]['temperature']['min']['celsius']
     tem_max = json_file['forecasts'][forecast_day]['temperature']['max']['celsius']
-    temp = '・気温\n最低 : ' + str(tem_min) + '℃ 最高 : ' + str(tem_max) + '℃'
+    temp = '・気温\n 最高      最低\n'+ str(tem_max) + '℃      ' + str(tem_min) + '℃'
 
     # 降水確率を配列に格納
     chance_of_rain = []
-    cor_text = "・降水確率"
+    cor_text = "・降水確率\n 0  -   6  -  12  -  18  -  24\n   "
     for i in range(4):
         chance_of_rain += [json_file['forecasts'][forecast_day]['chanceOfRain']['T'+f'{i*6:02}'+'_'+f'{(i+1)*6:02}']]
-        cor_text += '\n' + str(i*6) + '時\n |       ' + chance_of_rain[i]
-        if i == 3:
-            cor_text += '\n24時'
+        cor_text += chance_of_rain[i] + '    '
 
     # 送信メッセージに入れる
-    sendMessage = title + '\n' + telop + '\n' + temp + '\n' + cor_text
+    sendMessage = title + '\n\n' + telop + '\n\n' + temp + '\n\n' + cor_text
 
     # Send to Line
     lineSend(sendMessage)
