@@ -47,7 +47,7 @@ def getWeather():
     json_file = requests.get(os.path.join(base_url,'city',city_id_dict[city_name])).json()
     
     # jsonファイルから変数に格納
-    title = '\n' + json_file['forecasts'][forecast_day]['date'] + 'の' + city_name
+    title = json_file['forecasts'][forecast_day]['date'] + 'の' + city_name
     telop = '・天気\n' + json_file['forecasts'][forecast_day]['telop']
     tem_min = json_file['forecasts'][forecast_day]['temperature']['min']['celsius']
     tem_max = json_file['forecasts'][forecast_day]['temperature']['max']['celsius']
@@ -61,11 +61,11 @@ def getWeather():
         cor_text += chance_of_rain[i] + '    '
 
     # 送信メッセージに入れる
-    sendMessage = title + '\n\n' + telop + '\n\n' + temp + '\n\n' + cor_text
+    sendMessage = '\n' + title + '\n\n' + telop + '\n\n' + temp + '\n\n' + cor_text
 
     # Send to Line
     lineSend(sendMessage)
     
-    
+
 if __name__ == "__main__":
     main()
