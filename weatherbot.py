@@ -9,7 +9,6 @@ from time import sleep
 line_notify_token = "your-token"
 city_name = 'さいたま'
 notice_time = '06:50'
-forecast_day = 1
 
 def main():
     lineSend("起動しました\n" + str(datetime.datetime.now().replace(microsecond=0)))
@@ -45,6 +44,11 @@ def getWeather():
         city_id_dict[value.attrib['title']] = value.attrib['id']
         
     json_file = requests.get(os.path.join(base_url,'city',city_id_dict[city_name])).json()
+
+    if datetime.time(12, 0, 0) <= datetime.datetime.now().time() <= datetime.time(23, 59, 59):
+        forecast_day = 1
+    else:
+        forecast_day = 0
     
     # jsonファイルから変数に格納
     title = json_file['forecasts'][forecast_day]['date'] + 'の' + city_name
