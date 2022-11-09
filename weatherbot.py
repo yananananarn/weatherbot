@@ -55,15 +55,15 @@ def getWeather():
 
     # 降水確率を配列に格納
     chance_of_rain = []
+    cor_text = "・降水確率"
     for i in range(4):
         chance_of_rain += [json_file['forecasts'][forecast_day]['chanceOfRain']['T'+f'{i*6:02}'+'_'+f'{(i+1)*6:02}']]
+        cor_text += '\n' + str(i*6) + '時\n ~    ' + chance_of_rain[i]
+        if i == 3:
+            cor_text += '\n24時'
 
     # 送信メッセージに入れる
-    sendMessage = title + '\n' + telop + '\n' + temp + '\n・降水確率'
-    for i in range(4):
-        sendMessage += '\n' + str(i*6) + '時\n ~    ' + chance_of_rain[i] #+ '\n' + str((i+1)*6) + '時'
-        if i == 3:
-            sendMessage += '\n24時'
+    sendMessage = title + '\n' + telop + '\n' + temp + '\n' + cor_text
 
     # Send to Line
     lineSend(sendMessage)
