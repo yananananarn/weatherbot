@@ -58,7 +58,7 @@ def getWeather():
     cor_text = "・降水確率"
     for i in range(4):
         chance_of_rain += [json_file['forecasts'][forecast_day]['chanceOfRain']['T'+f'{i*6:02}'+'_'+f'{(i+1)*6:02}']]
-        cor_text += '\n' + str(i*6) + '時\n ~    ' + chance_of_rain[i]
+        cor_text += '\n' + str(i*6) + '時\n |       ' + chance_of_rain[i]
         if i == 3:
             cor_text += '\n24時'
 
