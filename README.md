@@ -2,6 +2,8 @@
 
 LineNotifyで天気を通知してくれるBOTです。
 
+<img width="500" src="https://assets.st-note.com/production/uploads/images/90830879/picture_pc_ec653c6f817261bf2fe821f30571f5f3.png?width=800">
+
 ## 各自で指定すること
 
 入力項目は**3つ**あり、各自で任意の**トークン・都市・通知時間**を入れれば誰でも使えるようになると思います。**トークン発行は必須です**
@@ -34,7 +36,8 @@ Linuxでもできると思います。
 
 3. 設定の詳細を記述する。{ }この括弧があるところは各自の環境で修正してください。( { }この括弧はいらない )
 
-```
+
+```service:/etc/systemd/system/weather.service
 [Unit]
 Description={ 任意の説明文(例：Do weatherbot) }
 After=network-online.target
@@ -49,6 +52,7 @@ Type=simple
 [Install]
 WantedBy=multi-user.target
 ```
+
 
 4. 入力できたら`Ctrl + O`で保存、`Ctrl + X`でエディタを抜ける。
 
