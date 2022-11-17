@@ -8,10 +8,10 @@ from time import sleep
 # Enter any value by each user
 line_notify_token = "your-token"
 city_name = 'さいたま'
-notice_time = '06:50'
+notice_time = '04:59'
 
 def main():
-    lineSend("起動しました\n" + str(datetime.datetime.now().replace(microsecond=0)))
+    lineSend("起動しました\n" + str(datetime.datetime.now().replace(microsecond=0)) + "\n\n設定都市：" + city_name + "\n通知時間：" + notice_time)
     getWeather()
 
     schedule.every().days.at(notice_time).do(getWeather)
@@ -45,6 +45,7 @@ def getWeather():
         
     json_file = requests.get(os.path.join(base_url,'city',city_id_dict[city_name])).json()
 
+    # 12:00:00 ~ 23:59:59の間は明日の天気を表示、それ以外は今日の天気を表示
     if datetime.time(12, 0, 0) <= datetime.datetime.now().time() <= datetime.time(23, 59, 59):
         forecast_day = 1
     else:
